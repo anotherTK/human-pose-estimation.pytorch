@@ -1,16 +1,21 @@
+# Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 import logging
-import coloredlogs
 import os
+import sys
 
 
-def setup_logger(name, save_dir=None, distributed_rank=0, filename="log.txt"):
+def setup_logger(name, save_dir, distributed_rank, filename="log.txt"):
     logger = logging.getLogger(name)
-    coloredlogs.install(level='DEBUG', logger=logger)
-    # logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.DEBUG)
     # don't log results for the non-master process
     if distributed_rank > 0:
         return logger
-    formatter = logging.Formatter("%(asctime)s %(name)s %(levelname)s: %(message)s")
+    ch = logging.StreamHandler(stream=sys.stdout)
+    ch.setLevel(logging.DEBUG)
+    formatter = logging.Formatter(
+        "%(asctime)s %(name)s %(levelname)s: %(message)s")
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
 
     if save_dir:
         fh = logging.FileHandler(os.path.join(save_dir, filename))
