@@ -50,7 +50,7 @@ def train(cfg, local_rank, distributed):
 
     save_to_disk = get_rank() == 0
     checkpointer = Checkpointer(
-        cfg, model, optimizer, scheduler, output_dir, save_to_disk
+        model, optimizer, scheduler, output_dir, save_to_disk
     )
     extra_checkpoint_data = checkpointer.load(cfg.MODEL.WEIGHT)
     arguments.update(extra_checkpoint_data)

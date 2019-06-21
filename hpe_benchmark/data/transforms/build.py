@@ -23,7 +23,7 @@ def build_transforms(cfg, is_train=True):
         hue=hue,
     )
 
-    transform = T.Compose(
+    transform = transforms.Compose(
         [
             color_jitter,
             transforms.ToTensor(),

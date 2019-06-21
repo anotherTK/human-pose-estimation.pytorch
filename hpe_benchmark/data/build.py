@@ -67,7 +67,7 @@ def make_batch_data_sampler(
 
 def make_data_loader(cfg, stage="train", is_distributed=False, start_iter=0):
     num_gpus = get_world_size()
-    if is_train:
+    if stage == 'train':
         images_per_gpu = cfg.SOLVER.IMS_PER_GPU
         shuffle = True
         num_iters = cfg.SOLVER.MAX_ITER
