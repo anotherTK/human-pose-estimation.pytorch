@@ -1,4 +1,5 @@
 
+import torch
 
 class BatchCollator(object):
     def __init__(self, size_divisible, stage):
