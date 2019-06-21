@@ -1,0 +1,5 @@
+MODEL:
+  WEIGHT: './work_dirs/pretrained/resnet.pth'
+
+SOLVER:
+  OPTIMIZER: 'SGD'

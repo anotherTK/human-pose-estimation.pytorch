@@ -54,6 +54,10 @@ class Checkpointer(object):
             return {}
         self.logger.info("Loading checkpoint from {}".format(f))
         checkpoint = self._load_file(f)
+        if 'model' not in checkpoint:
+            _ckpt = {}
+            _ckpt['model'] = checkpoint
+            checkpoint = _ckpt
         self._load_model(checkpoint)
         if "optimizer" in checkpoint and self.optimizer:
             self.logger.info("Loading optimizer from {}".format(f))
