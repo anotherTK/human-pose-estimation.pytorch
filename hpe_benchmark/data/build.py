@@ -72,7 +72,7 @@ def make_data_loader(cfg, stage="train", is_distributed=False, start_iter=0):
         shuffle = True
         num_iters = cfg.SOLVER.MAX_ITER
     else:
-        images_per_gpu = cfg.TEST.IMS_PER_BATCH
+        images_per_gpu = cfg.TEST.IMS_PER_GPU
         shuffle = False if not is_distributed else True
         num_iters = None
         start_iter = 0

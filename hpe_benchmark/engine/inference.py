@@ -3,6 +3,8 @@
 import logging
 import time
 import os
+import cv2
+import numpy as np
 
 import torch
 from tqdm import tqdm
@@ -17,20 +19,20 @@ from hpe_benchmark.data.transforms import flip_back
 def transform_back(outputs, centers, scales, kernel=11, shifts=[0.25]):
     scales *= 200
     nr_img = outputs.shape[0]
-    preds = np.zeros((nr_img, cfg.DATASET.KEYPOINT.NUM, 2))
-    maxvals = np.zeros((nr_img, cfg.DATASET.KEYPOINT.NUM, 1))
+    preds = np.zeros((nr_img, cfg.KEYPOINT.NUM, 2))
+    maxvals = np.zeros((nr_img, cfg.KEYPOINT.NUM, 1))
     for i in range(nr_img):
         score_map = outputs[i].copy()
         score_map = score_map / 255 + 0.5
-        kps = np.zeros((cfg.DATASET.KEYPOINT.NUM, 2))
-        scores = np.zeros((cfg.DATASET.KEYPOINT.NUM, 1))
+        kps = np.zeros((cfg.KEYPOINT.NUM, 2))
+        scores = np.zeros((cfg.KEYPOINT.NUM, 1))
         border = 10
-        dr = np.zeros((cfg.DATASET.KEYPOINT.NUM,
-                       cfg.OUTPUT_SHAPE[0] + 2 * border, cfg.OUTPUT_SHAPE[1] + 2 * border))
+        dr = np.zeros((cfg.KEYPOINT.NUM,
+                       cfg.DATA.OUTPUT_SHAPE[0] + 2 * border, cfg.DATA.OUTPUT_SHAPE[1] + 2 * border))
         dr[:, border: -border, border: -border] = outputs[i].copy()
-        for w in range(cfg.DATASET.KEYPOINT.NUM):
+        for w in range(cfg.KEYPOINT.NUM):
             dr[w] = cv2.GaussianBlur(dr[w], (kernel, kernel), 0)
-        for w in range(cfg.DATASET.KEYPOINT.NUM):
+        for w in range(cfg.KEYPOINT.NUM):
             for j in range(len(shifts)):
                 if j == 0:
                     lb = dr[w].argmax()
@@ -47,15 +49,15 @@ def transform_back(outputs, centers, scales, kernel=11, shifts=[0.25]):
                 if ln > 1e-3:
                     x += shifts[j] * px / ln
                     y += shifts[j] * py / ln
-            x = max(0, min(x, cfg.OUTPUT_SHAPE[1] - 1))
-            y = max(0, min(y, cfg.OUTPUT_SHAPE[0] - 1))
+            x = max(0, min(x, cfg.DATA.OUTPUT_SHAPE[1] - 1))
+            y = max(0, min(y, cfg.DATA.OUTPUT_SHAPE[0] - 1))
             kps[w] = np.array([x * 4 + 2, y * 4 + 2])
             scores[w, 0] = score_map[w, int(round(y) + 1e-9),
                                      int(round(x) + 1e-9)]
         # aligned or not ...
-        kps[:, 0] = kps[:, 0] / cfg.INPUT_SHAPE[1] * scales[i][0] + \
+        kps[:, 0] = kps[:, 0] / cfg.DATA.INPUT_SHAPE[1] * scales[i][0] + \
             centers[i][0] - scales[i][0] * 0.5
-        kps[:, 1] = kps[:, 1] / cfg.INPUT_SHAPE[0] * scales[i][1] + \
+        kps[:, 1] = kps[:, 1] / cfg.DATA.INPUT_SHAPE[0] * scales[i][1] + \
             centers[i][1] - scales[i][1] * 0.5
         preds[i] = kps
         maxvals[i] = scores
@@ -73,7 +75,7 @@ def compute_on_dataset(model, data_loader, device, timer=None):
         with torch.no_grad():
             if timer:
                 timer.tic()
-            output = model(imgs)
+            outputs = model(imgs)
             outputs = outputs.to(cpu_device).numpy()
 
             if cfg.TEST.FLIP:
