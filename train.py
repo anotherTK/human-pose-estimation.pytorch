@@ -10,6 +10,7 @@ from hpe_benchmark.solver import make_optimizer
 
 # from hpe_benchmark.engine.inference import inference
 from hpe_benchmark.engine.trainer import do_train
+from hpe_benchmark.engine.inference import inference
 from hpe_benchmark.models import build_model
 from hpe_benchmark.utils.checkpoint import Checkpointer
 from hpe_benchmark.utils.comm import synchronize, get_rank
@@ -77,6 +78,26 @@ def train(cfg, local_rank, distributed):
 
     return model
 
+
+def run_eval(cfg, model, distributed):
+    if distributed:
+        model = model.module
+    torch.cuda.empty_cache()  # TODO check if it helps
+    iou_types = ("keypoints",)
+    dataset_name = cfg.DATA.DATASET_NAME
+    output_folder = os.path.join(cfg.OUTPUT_DIR, "inference", dataset_name)
+    mkdir(output_folder)
+    data_loader_val = make_data_loader(cfg, stage="val", is_distributed=distributed)
+    inference(
+        model,
+        data_loader_val,
+        dataset_name=dataset_name,
+        iou_types=iou_types,
+        device=cfg.MODEL.DEVICE,
+        output_folder=output_folder,
+    )
+    synchronize()
+
 def main():
     parser = argparse.ArgumentParser(
         description="PyTorch Human Pose Estimation Training")
@@ -89,9 +110,9 @@ def main():
     )
     parser.add_argument("--local_rank", type=int, default=0)
     parser.add_argument(
-        "--skip-test",
-        dest="skip_test",
-        help="Do not test the final model",
+        "--skip-eval",
+        dest="skip_eval",
+        help="Do not eval the final model",
         action="store_true",
     )
     parser.add_argument(
@@ -138,8 +159,8 @@ def main():
 
     model = train(cfg, args.local_rank, args.distributed)
 
-    if not args.skip_test:
-        run_test(cfg, model, args.distributed)
+    if not args.skip_eval:
+        run_eval(cfg, model, args.distributed)
 
 
 if __name__ == "__main__":

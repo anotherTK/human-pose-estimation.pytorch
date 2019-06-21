@@ -92,5 +92,6 @@ def make_data_loader(cfg, stage="train", is_distributed=False, start_iter=0):
         batch_sampler=batch_sampler,
         collate_fn=collator,
     )
+    data_loader.dataset = dataset
 
     return data_loader
