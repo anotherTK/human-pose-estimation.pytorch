@@ -5,7 +5,7 @@ import time
 import os
 import cv2
 import numpy as np
-
+import json
 import torch
 from tqdm import tqdm
 
@@ -66,7 +66,7 @@ def transform_back(outputs, centers, scales, kernel=11, shifts=[0.25]):
 
 def compute_on_dataset(model, data_loader, device, timer=None):
     model.eval()
-    results = {}
+    results = []
     cpu_device = torch.device("cpu")
     data = tqdm(data_loader) if is_main_process() else data_loader
     for _, batch in enumerate(data):
@@ -164,6 +164,8 @@ def inference(
         return
 
     if output_folder:
-        torch.save(predictions, os.path.join(output_folder, "predictions.json"))
+        #torch.save(predictions, os.path.join(output_folder, "predictions.pth"))
+        with open(os.path.join(output_folder, "predictions.json"), 'w') as w_obj:
+            json.dump(predictions, w_obj)
         data_loader.dataset.evaluate(
             os.path.join(output_folder, "predictions.json"))
