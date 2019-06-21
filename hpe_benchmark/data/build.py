@@ -14,7 +14,7 @@ from .transforms import build_transforms
 from hpe_benchmark.utils.comm import get_world_size
 
 def build_dataset(cfg, stage, transforms):
-    factory = D.get(cfg.DATASET_NAME)
+    factory = D.get(cfg.DATA.DATASET_NAME)
     return factory(cfg, stage, transforms)
 
 
