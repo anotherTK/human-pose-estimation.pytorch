@@ -7,6 +7,7 @@ _C = CN()
 _C.OUTPUT_DIR = "./work_dirs"
 _C.RUN_EFFICIENT = False
 _C.DTYPE = "float32"
+_C.AMP_VERBOSE = False
 
 _C.MODEL = CN()
 _C.MODEL.ARCH = "MSPN"

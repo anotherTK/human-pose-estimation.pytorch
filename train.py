@@ -7,8 +7,6 @@ from hpe_benchmark.config import cfg
 from hpe_benchmark.data import make_data_loader
 from hpe_benchmark.solver import make_lr_scheduler
 from hpe_benchmark.solver import make_optimizer
-
-# from hpe_benchmark.engine.inference import inference
 from hpe_benchmark.engine.trainer import do_train
 from hpe_benchmark.engine.inference import inference
 from hpe_benchmark.models import build_model
