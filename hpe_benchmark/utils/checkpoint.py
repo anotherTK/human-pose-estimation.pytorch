@@ -2,7 +2,7 @@ import logging
 import os
 
 import torch
-
+from hpe_benchmark.utils.model_serialization import load_state_dict
 
 class Checkpointer(object):
     def __init__(
