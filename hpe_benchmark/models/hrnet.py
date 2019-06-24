@@ -479,3 +479,18 @@ class PHRN(nn.Module):
                 for name, _ in m.named_parameters():
                     if name in ['bias']:
                         nn.init.constant_(m.bias, 0)
+
+
+if __name__ == '__main__':
+    import os
+    from hpe_benchmark.config import cfg
+    from torch.utils.tensorboard import SummaryWriter
+    presnet = PHRN(cfg)
+    imgs = torch.randn(2, 3, 256, 192)
+    valids = torch.randn(2, 17, 1)
+    labels = torch.randn(2, 5, 17, 64, 48)
+    out = presnet(imgs)
+    print(out.shape)
+    # terminal: tensorboard --logdir=#OUTPUT_DIR/runs
+    writer = SummaryWriter(os.path.join(cfg.OUTPUT_DIR, 'runs'))
+    writer.add_graph(presnet, imgs)
