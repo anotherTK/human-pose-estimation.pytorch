@@ -1,0 +1,16 @@
+OUTPUT_DIR: './work_dirs/efficient-b4'
+TESTSET_ENABLE: False
+MODEL:
+  ARCH: "EFFNET"
+  WEIGHT: './work_dirs/pretrained/efficientnet-b4.pth'
+SOLVER:
+  OPTIMIZER: 'Adam'
+  IMS_PER_GPU: 32
+  BASE_LR: 2e-3
+  CHECKPOINT_PERIOD: 2400
+  GAMMA: 0.1
+  MAX_ITER: 96000
+  SCHEDULER: 'step'
+  WARMUP_ITERS: 2400
+TEST:
+  IMS_PER_GPU: 32
