@@ -453,7 +453,7 @@ class PHRN(nn.Module):
 
     def _calculate_loss(self, outputs, valids, labels):
         criterion = JointsMSELoss()
-        target_weights = valids.clone()
+        target_weights = torch.gt(valids, 1).float()
         # corresponding to gaussian kernel (11, 11)
         targets = labels[:, 1, :, :, :]
         if not isinstance(outputs, list):

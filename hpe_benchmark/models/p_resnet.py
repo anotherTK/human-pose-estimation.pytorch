@@ -192,9 +192,10 @@ class PRESN(nn.Module):
         return nn.Sequential(*layers)
 
     def _calculate_loss(self, outputs, valids, labels):
-        target_weights = valids.clone()
-        targets = labels[:, 1, :, :, :]  # corresponding to gaussian kernel (11, 11)
         criterion = JointsMSELoss()
+        target_weights = torch.gt(valids, 1).float()
+        # corresponding to gaussian kernel (11, 11)
+        targets = labels[:, 1, :, :, :]
         loss = criterion(outputs, targets, target_weights)
         return dict(total_loss=loss)
 
