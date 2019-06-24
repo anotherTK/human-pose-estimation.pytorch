@@ -78,7 +78,7 @@ def main():
     dataset_name = cfg.DATA.DATASET_NAME
     output_folder = os.path.join(cfg.OUTPUT_DIR, "inference", dataset_name)
     mkdir(output_folder)
-    data_loader_test = make_data_loader(cfg, stage=("test" if cfg.TESTSET_ENABLE else "val", is_distributed=distributed)
+    data_loader_test = make_data_loader(cfg, stage=("test" if cfg.TESTSET_ENABLE else "val"), is_distributed=distributed)
     inference(
         model,
         data_loader_test,
