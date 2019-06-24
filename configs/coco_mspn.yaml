@@ -1,7 +1,14 @@
+TESTSET_ENABLE: False
 MODEL:
   WEIGHT: './work_dirs/pretrained/resnet-50_rename.pth'
-
 SOLVER:
-  OPTIMIZER: 'SGD'
-
-TESTSET_ENABLE: False
+  OPTIMIZER: 'Adam'
+  IMS_PER_GPU: 32
+  BASE_LR: 4e-3
+  CHECKPOINT_PERIOD: 2400
+  GAMMA: 0.5
+  MAX_ITER: 96000
+  SCHEDULER: 'linear'
+  WARMUP_ITERS: 2400
+TEST:
+  IMS_PER_GPU: 8
