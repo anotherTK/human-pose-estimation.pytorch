@@ -7,4 +7,5 @@ This repo aims to integral many fantastic works in human pose estimation with py
 | MSPN   | N          | Adam        | 96k       | 73.5    |
 | MSPN   | Y          | Adam        | 96k       | 74.7    |
 | MSPN   | Y          | Adam(paper) | 96k       | *       |
-| RES-50 | Y          | Adam        | 90k       | *       |
+| RES-50 | Y          | Adam        | 96k       | *       |
+| HR-W48 | Y          | Adam        | 96k       | *       |
