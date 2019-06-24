@@ -1,7 +1,7 @@
 OUTPUT_DIR: './work_dirs/resnet-50'
 TESTSET_ENABLE: False
 MODEL:
-  ARCH: "PResNet"
+  ARCH: "RESNET"
   WEIGHT: './work_dirs/pretrained/resnet-50.pth'
   RESNET:
     LAYERS: 50
