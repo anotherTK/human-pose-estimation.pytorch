@@ -1,9 +1,12 @@
 from . import MSPN
-from . import PResNet
+from . import PRESN
+from . import PHRN
+
 
 _META_ARCH = {
     "MSPN": MSPN,
-    "RESNET": PResNet,
+    "RESNET": PRESN,
+    "HRNET": PHRN,
 }
 
 def build_model(cfg):

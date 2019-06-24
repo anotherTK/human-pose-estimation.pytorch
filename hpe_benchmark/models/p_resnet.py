@@ -99,7 +99,7 @@ resnet_spec = {
 }
 
 
-class PResNet(nn.Module):
+class PRESN(nn.Module):
 
     def __init__(self, cfg):
         block, layers = resnet_spec[cfg.MODEL.RESNET.LAYERS]
@@ -237,7 +237,7 @@ if __name__ == '__main__':
     import os
     from hpe_benchmark.config import cfg
     from torch.utils.tensorboard import SummaryWriter
-    presnet = PResNet(cfg)
+    presnet = PRESN(cfg)
     imgs = torch.randn(2, 3, 256, 192)
     valids = torch.randn(2, 17, 1)
     labels = torch.randn(2, 5, 17, 64, 48)
