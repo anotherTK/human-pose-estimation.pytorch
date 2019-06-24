@@ -1,4 +1,5 @@
 TESTSET_ENABLE: False
+OUTPUT_DIR: './work_dirs/paper-setting'
 MODEL:
   WEIGHT: './work_dirs/pretrained/resnet-50_rename.pth'
 SOLVER:
