@@ -70,7 +70,7 @@ def main():
     amp_handle = amp.init(enabled=use_mixed_precision, verbose=cfg.AMP_VERBOSE)
 
     output_dir = cfg.OUTPUT_DIR
-    checkpointer = Checkpointer(cfg, model, save_dir=output_dir)
+    checkpointer = Checkpointer(model, save_dir=output_dir)
     ckpt = cfg.MODEL.WEIGHT if args.ckpt is None else args.ckpt
     _ = checkpointer.load(ckpt, use_latest=args.ckpt is None)
 
@@ -78,7 +78,7 @@ def main():
     dataset_name = cfg.DATA.DATASET_NAME
     output_folder = os.path.join(cfg.OUTPUT_DIR, "inference", dataset_name)
     mkdir(output_folder)
-    data_loader_test = make_data_loader(cfg, stage="test", is_distributed=distributed)
+    data_loader_test = make_data_loader(cfg, stage=("test" if cfg.TESTSET_ENABLE else "val", is_distributed=distributed)
     inference(
         model,
         data_loader_test,

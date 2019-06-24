@@ -1,5 +1,7 @@
 MODEL:
-  WEIGHT: './work_dirs/pretrained/resnet.pth'
+  WEIGHT: './work_dirs/pretrained/resnet-50_rename.pth'
 
 SOLVER:
   OPTIMIZER: 'SGD'
+
+TESTSET_ENABLE: False
