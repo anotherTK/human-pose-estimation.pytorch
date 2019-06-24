@@ -9,3 +9,11 @@ This repo aims to integral many fantastic works in human pose estimation with py
 | MSPN   | Y          | Adam(paper) | 96k       | *       |
 | RES-50 | Y          | Adam        | 96k       | *       |
 | HR-W48 | Y          | Adam        | 96k       | *       |
+
+
+## Miletone
+
+- [x] add MSPN
+- [x] add resnet
+- [x] add hrnet
+- [ ] add efficientnet
