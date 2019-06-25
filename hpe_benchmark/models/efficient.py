@@ -324,9 +324,9 @@ class PEFFN(nn.Module):
 
     def __init__(self, cfg):
         super().__init__()
+        blocks_args, global_params = get_model_params(cfg.MODEL.EFFNET.NAME, None)
         assert isinstance(blocks_args, list), 'blocks_args should be a list'
         assert len(blocks_args) > 0, 'block args must be greater than 0'
-        blocks_args, global_params = get_model_params(cfg.MODEL.EFFNET.NAME, None)
         self._global_params = global_params
         self._blocks_args = blocks_args
 
@@ -391,24 +391,26 @@ class PEFFN(nn.Module):
         self.down_out_idx = [5, 9, 21, 31]
         self.upsample_layers = self._make_upsample_layers([448, 160, 56, 32])
         self.skip_connect = cfg.MODEL.EFFNET.SKIP_CONNECT
+        self.out_channels = cfg.KEYPOINT.NUM
         self.final_layers = self._make_final_layers([448, 160, 56, 32])
 
         self.init_weights()
         # load pretrained
-        
+
 
     def _make_upsample_layers(self, num_channles):
         layers = []
-        for i in range(len(num_channles) - 1):
+        for i in range(len(num_channles)):
             layers.append(nn.Sequential(
                 Conv2dSamePadding(num_channles[i], num_channles[i], 3),
                 nn.BatchNorm2d(num_channles[i]),
             ))
-            layers.append(nn.Sequential(
-                nn.Upsample(scale_factor=2, mode='bilinear'),
-                Conv2dSamePadding(num_channles[i], num_channles[i + 1], 3),
-                nn.BatchNorm2d(num_channles[i + 1]),
-            ))
+            if i != len(num_channles) - 1:
+                layers.append(nn.Sequential(
+                    nn.Upsample(scale_factor=2, mode='bilinear'),
+                    Conv2dSamePadding(num_channles[i], num_channles[i + 1], 3),
+                    nn.BatchNorm2d(num_channles[i + 1]),
+                ))
 
         return nn.ModuleList(layers)
 
@@ -417,11 +419,12 @@ class PEFFN(nn.Module):
         scale_factor = [8, 4, 2, 1]
         for i in range(len(num_channles)):
             if i == len(num_channles) - 1:
-                layers.append(Conv2dSamePadding(num_channles[i], cfg.KEYPOINT.NUM, 1))
+                layers.append(Conv2dSamePadding(
+                    num_channles[i], self.out_channels, 1))
             else:
                 layers.append(nn.Sequential(
                     nn.Upsample(scale_factor=scale_factor[i], mode='bilinear'),
-                    Conv2dSamePadding(channel, cfg.KEYPOINT.NUM, 1),
+                    Conv2dSamePadding(num_channles[i], self.out_channels, 1),
                 ))
 
         return nn.ModuleList(layers)
@@ -486,9 +489,10 @@ class PEFFN(nn.Module):
             if i != 0 and self.skip_connect:
                 x = relu_fn(self.upsample_layers[2*i](down_outputs[-i-1] + pre_up))
             else:
-                x = relu_fn(self.upsample_layers[2*i](prev_up))
+                x = relu_fn(self.upsample_layers[2*i](pre_up))
             stage_output.append(x)
-            pre_up = relu_fn(self.upsample_layers[2*i + 1](x))
+            if i != len(down_outputs) - 1:
+                pre_up = relu_fn(self.upsample_layers[2*i + 1](x))
 
         # make stage output to final feature map size
         outputs = []
@@ -499,8 +503,6 @@ class PEFFN(nn.Module):
             return outputs[-1]
         else:
             return self._calculate_loss(outputs, valids, labels)
-
-        return outputs
 
 
     @classmethod
