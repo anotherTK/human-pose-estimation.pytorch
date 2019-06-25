@@ -106,7 +106,7 @@ class PRESN(nn.Module):
         self.inplanes = 64
         self.deconv_with_bias = cfg.MODEL.RESNET.DECONV_WITH_BIAS
 
-        super(PResNet, self).__init__()
+        super(PRESN, self).__init__()
         self.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3,
                                bias=False)
         self.bn1 = nn.BatchNorm2d(64, momentum=BN_MOMENTUM)
