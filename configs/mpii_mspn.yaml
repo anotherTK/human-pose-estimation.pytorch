@@ -1,6 +1,6 @@
 TESTSET_ENABLE: False
 OUTPUT_DIR: './work_dirs/mpii-mspn'
-RUN_EFFICIENT: True
+RUN_EFFICIENT: False
 MODEL:
   WEIGHT: './work_dirs/pretrained/resnet-50_rename.pth'
 KEYPOINT:
