@@ -14,7 +14,9 @@ This repo aims to integral many fantastic works in human pose estimation with py
 
 ## Miletone
 
+- [x] coco dataset support
 - [x] add MSPN
 - [x] add resnet
 - [x] add hrnet
-- [ ] add efficientnet
+- [x] add efficientnet
+- [ ] mpii dataset support
