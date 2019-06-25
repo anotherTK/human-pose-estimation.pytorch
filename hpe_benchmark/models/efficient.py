@@ -5,7 +5,7 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 from torch.utils import model_zoo
-
+from hpe_benchmark.layers import JointsL2Loss
 
 GlobalParams = collections.namedtuple('GlobalParams', ['batch_norm_momentum', 'batch_norm_epsilon', 'dropout_rate', 'num_classes', 'width_coefficient', 'depth_coefficient', 'depth_divisor', 'min_depth', 'drop_connect_rate'])
 
@@ -329,6 +329,9 @@ class PEFFN(nn.Module):
         assert len(blocks_args) > 0, 'block args must be greater than 0'
         self._global_params = global_params
         self._blocks_args = blocks_args
+        self.ohkm = cfg.LOSS.OHKM
+        self.topk = cfg.LOSS.TOPK
+        self.ctf = cfg.LOSS.COARSE_TO_FINE
 
         bn_mom = 1 - self._global_params.batch_norm_momentum
         bn_eps = self._global_params.batch_norm_epsilon
