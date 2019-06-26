@@ -170,6 +170,7 @@ def inference(
     if output_folder:
         #torch.save(predictions, os.path.join(output_folder, "predictions.pth"))
         if isinstance(data_loader.dataset, D.MPIIDataset):
+            predictions = np.vstack(predictions)
             data_loader.dataset.evaluate(predictions)
         else:
             with open(os.path.join(output_folder, "predictions.json"), 'w') as w_obj:
