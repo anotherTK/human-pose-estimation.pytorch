@@ -80,6 +80,7 @@ def main():
     mkdir(output_folder)
     data_loader_test = make_data_loader(cfg, stage=("test" if cfg.TESTSET_ENABLE else "val"), is_distributed=distributed)
     inference(
+        cfg,
         model,
         data_loader_test,
         dataset_name=dataset_name,

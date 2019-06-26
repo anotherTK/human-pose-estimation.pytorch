@@ -12,7 +12,7 @@ This repo aims to integral many fantastic works in human pose estimation with py
 | HR-W48  | Y          | COCO    | Adam        | 96k       | 74.2    |
 | EFFN-b4 | Y          | COCO    | Adam        | 96k       | *       |
 | MSPN    | Y          | MPII    | Adam(paper) | 28.8k     | *       |
-| RES-50  | Y          | MPII    | Adam        | 28.8k     | *       |
+| RES-50  | Y          | MPII    | Adam        | 28.8k     | 88.94   |
 | HR-W48  | Y          | MPII    | Adam        | 28.8k     | *       |
 | EFFN-b4 | Y          | MPII    | Adam        | 28.8k     | *       |
 

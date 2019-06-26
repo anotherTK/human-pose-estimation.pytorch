@@ -88,6 +88,7 @@ def run_eval(cfg, model, distributed):
     mkdir(output_folder)
     data_loader_val = make_data_loader(cfg, stage="val", is_distributed=distributed)
     inference(
+        cfg,
         model,
         data_loader_val,
         dataset_name=dataset_name,

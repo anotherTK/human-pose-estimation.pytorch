@@ -17,7 +17,7 @@ from hpe_benchmark.utils.timer import Timer, get_time_str
 from hpe_benchmark.data.transforms import flip_back
 import hpe_benchmark.data.datasets as D
 
-def transform_back(outputs, centers, scales, kernel=11, shifts=[0.25]):
+def transform_back(cfg, outputs, centers, scales, kernel=11, shifts=[0.25]):
     scales *= 200
     nr_img = outputs.shape[0]
     preds = np.zeros((nr_img, cfg.KEYPOINT.NUM, 2))
@@ -65,7 +65,7 @@ def transform_back(outputs, centers, scales, kernel=11, shifts=[0.25]):
 
     return preds, maxvals
 
-def compute_on_dataset(model, data_loader, device, timer=None):
+def compute_on_dataset(cfg, model, data_loader, device, timer=None):
     model.eval()
     results = []
     cpu_device = torch.device("cpu")
@@ -95,7 +95,7 @@ def compute_on_dataset(model, data_loader, device, timer=None):
         
         centers = np.array(centers)
         scales = np.array(scales)
-        preds, maxvals = transform_back(outputs, centers, scales, cfg.TEST.GAUSSIAN_KERNEL, cfg.TEST.SHIFT_RATIOS)
+        preds, maxvals = transform_back(cfg, outputs, centers, scales, cfg.TEST.GAUSSIAN_KERNEL, cfg.TEST.SHIFT_RATIOS)
         kp_scores = maxvals.squeeze().mean(axis=1)
         preds = np.concatenate((preds, maxvals), axis=2)
 
@@ -127,6 +127,7 @@ def _accumulate_predictions_from_multiple_gpus(predictions_per_gpu):
     return predictions
 
 def inference(
+    cfg,
     model,
     data_loader,
     dataset_name,
@@ -144,7 +145,7 @@ def inference(
     total_timer = Timer()
     inference_timer = Timer()
     total_timer.tic()
-    predictions = compute_on_dataset(model, data_loader, device, inference_timer)
+    predictions = compute_on_dataset(cfg, model, data_loader, device, inference_timer)
     synchronize()
     total_time = total_timer.toc()
     total_time_str = get_time_str(total_time)
