@@ -72,8 +72,7 @@ class MPIIDataset(JointsDataset):
         return data
 
     # referring msra high resolution
-    def evaluate(self, pred_path):
-        preds = json.load(open(pred_path))
+    def evaluate(self, preds):
         preds = preds[:, :, 0:2] + 1.0
 
         SC_BIAS = 0.6

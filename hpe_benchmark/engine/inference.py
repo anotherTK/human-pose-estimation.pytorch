@@ -15,6 +15,7 @@ from hpe_benchmark.utils.comm import all_gather
 from hpe_benchmark.utils.comm import synchronize
 from hpe_benchmark.utils.timer import Timer, get_time_str
 from hpe_benchmark.data.transforms import flip_back
+import hpe_benchmark.data.datasets as D
 
 def transform_back(outputs, centers, scales, kernel=11, shifts=[0.25]):
     scales *= 200
@@ -98,15 +99,18 @@ def compute_on_dataset(model, data_loader, device, timer=None):
         kp_scores = maxvals.squeeze().mean(axis=1)
         preds = np.concatenate((preds, maxvals), axis=2)
 
-        for i in range(preds.shape[0]):
-            keypoints = preds[i].reshape(-1).tolist()
-            score = scores[i] * kp_scores[i]
-            image_id = img_ids[i]
+        if isinstance(data_loader.dataset, D.MPIIDataset):
+            results.append(preds)
+        else:
+            for i in range(preds.shape[0]):
+                keypoints = preds[i].reshape(-1).tolist()
+                score = scores[i] * kp_scores[i]
+                image_id = img_ids[i]
 
-            results.append(dict(image_id=image_id,
-                                category_id=1,
-                                keypoints=keypoints,
-                                score=score))
+                results.append(dict(image_id=image_id,
+                                    category_id=1,
+                                    keypoints=keypoints,
+                                    score=score))
     return results
 
 
@@ -165,7 +169,10 @@ def inference(
 
     if output_folder:
         #torch.save(predictions, os.path.join(output_folder, "predictions.pth"))
-        with open(os.path.join(output_folder, "predictions.json"), 'w') as w_obj:
-            json.dump(predictions, w_obj)
-        data_loader.dataset.evaluate(
-            os.path.join(output_folder, "predictions.json"))
+        if isinstance(data_loader.dataset, D.MPIIDataset):
+            data_loader.dataset.evaluate(predictions)
+        else:
+            with open(os.path.join(output_folder, "predictions.json"), 'w') as w_obj:
+                json.dump(predictions, w_obj)
+            data_loader.dataset.evaluate(
+                os.path.join(output_folder, "predictions.json"))
