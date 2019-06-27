@@ -43,9 +43,9 @@ class Compose(object):
         self.transforms = transforms
 
     def __call__(self, image):
-        for t in self.random_transforms:
-            if random.random() > 0.5:
-                image = t(image)
+        if random.random() > 0.5:
+            for t in self.random_transforms:
+                    image = t(image)
         for t in self.transforms:
             image = t(image)
         return image
