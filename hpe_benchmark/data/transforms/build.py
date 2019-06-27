@@ -26,6 +26,7 @@ def build_transforms(cfg, is_train=True):
 
     transform = Compose(
         [
+            transforms.ToPILImage(),
             color_jitter,
         ],
         [
