@@ -1,16 +1,18 @@
 # human-pose-estimation.pytorch
 This repo aims to integral many fantastic works in human pose estimation with pytorch. This codes are heavily borrowed from HRNet and MSPNet, the code structure imitates the maskrcnn-benchmark, aims to fast, modular and distributed training with pytorch! 
 
-| model   | pretrained | dataset | optimizer   | iteration | eval AP |
-| ------- | ---------- | ------- | ----------- | --------- | ------- |
+| model   | pretrained | dataset | optimizer   | iteration | eval AP | paper | Augment |
+| ------- | ---------- | ------- | ----------- | --------- | ------- | ----- | -- | 
 | MSPN    | N          | COCO    | SGD         | 96k       | 72.5    |
 | MSPN    | N          | COCO    | Adam        | 96k       | 73.5    |
 | MSPN    | Y          | COCO    | Adam        | 96k       | 74.7    |
-| MSPN    | Y          | COCO    | Adam(paper) | 96k       | 74.6    |
+| MSPN    | Y          | COCO    | Adam(paper) | 96k       | 74.6    | 74.5  |
 | RES-50  | Y          | COCO    | Adam        | 96k       | 70.9    |
 | RES-101 | Y          | COCO    | Adam        | 96k       | 70.1    |
 | HR-W48  | Y          | COCO    | Adam        | 96k       | 74.2    |
+| HR-W48  | Y          | COCO    | Adam        | 96k       | 72.1    |  * | Y |
 | EFFN-b4 | Y          | COCO    | Adam        | 96k       | 71.4    |
+| EFFN-b4 | Y          | COCO    | Adam        | 96k       | 71.6    |  * | Y |
 | MSPN    | Y          | MPII    | Adam(paper) | 28.8k     | 90.17   |
 | RES-50  | Y          | MPII    | Adam        | 28.8k     | 88.94   |
 | HR-W48  | Y          | MPII    | Adam        | 28.8k     | 90.87   |
@@ -83,6 +85,6 @@ python -m torch.distributed.launch --nproc_per_node=8 test.py --config-file conf
 
 ## Attention
 
-Try my best to keep update the new model structure, datasets and training strategies. Please star this repo~~~
+Try my best to keep update the new model structure, datasets and training strategies. Please **star** this repo~~~
 
 New pull requests are strongly welcomed!
